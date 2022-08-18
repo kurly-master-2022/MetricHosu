@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  metrichosu
+
+  SAM Template for metrichosu-restapi & metrichosu-collectors
+
+Globals:
+  Function:
+    Timeout: 480
+
+Resources:
+  MetricHosuBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub metrichosu-${AWS::Region}
+
+  MetricHosuTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: metrichosu
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+
+  ExternMetricCollector:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: metrichosu-collectors
+      Handler: org.metrichosu.mcollect.ExternMetricCollector::handle
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MetricHosuTable
+        - CloudWatchPutMetricPolicy: {}
+        - CloudWatchDashboardPolicy: {}
+
+  S3MetricCollector:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: metrichosu-collectors
+      Handler: org.metrichosu.mcollect.S3MetricCollector::handle
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Events:
+        S3NewMetricDataEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref MetricHosuBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: json
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub metrichosu-${AWS::Region}
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MetricHosuTable
+        - CloudWatchPutMetricPolicy: {}
+        - CloudWatchDashboardPolicy: {}
+
+  MetricHosuRestApiApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: MetricHosu REST API
+      ApplicationName: metrichosu-restapi
+
+  MetricHosuRestApiVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+       ApplicationName: !Ref MetricHosuRestApiApplication
+       SourceBundle: metrichosu-restapi/ebpackage
+
+  MetricHosuRestApiConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref MetricHosuRestApiApplication
+      SolutionStackName: 64bit Amazon Linux 2 v3.3.1 running Corretto 11
+      OptionSettings:
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref MetricHosuRestApiInstanceRole
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance
+
+  MetricHosuRestApiEnv:
+    Type: AWS::ElasticBeanstalk::Environment
+    DependsOn: MetricHosuRestApiVersion
+    Properties:
+      ApplicationName: !Ref MetricHosuRestApiApplication
+      TemplateName: !Ref MetricHosuRestApiConfigurationTemplate
+      VersionLabel: !Ref MetricHosuRestApiVersion
+
+  MetricHosuRestApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchEventsFullAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+  MetricHosuRestApiInstanceRole:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref MetricHosuRestApiRole
+
+Outputs:
+  ExternMetricCollectorFunction:
+    Description: "Extern Metric Collector ARN"
+    Value: !GetAtt ExternMetricCollector.Arn
+
+  S3MetricCollectorFunction:
+    Description: "S3 Metric Collector ARN"
+    Value: !GetAtt S3MetricCollector.Arn
+
+  MetricHosuRestApiAddress:
+    Description: "MetricHosu REST API Address"
+    Value: !Sub
+      - 'http://${EndpointURL}'
+      - EndpointURL: !GetAtt MetricHosuRestApiEnv.EndpointURL

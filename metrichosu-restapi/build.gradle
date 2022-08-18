@@ -1,0 +1,39 @@
+plugins {
+    id 'org.springframework.boot' version "${bootVersion}"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+version = rootProject.version
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation "com.amazonaws:aws-java-sdk-dynamodb:${awsSdkVersion}"
+    implementation "com.github.derjust:spring-data-dynamodb:${derjustVersion}"
+    implementation "com.amazonaws:aws-java-sdk-cloudwatch:${awsSdkVersion}"
+    implementation "com.amazonaws:aws-java-sdk-events:${awsSdkVersion}"
+    implementation "com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}"
+}
+
+def addProcfile(String dir) {
+    println "Creating a Procfile at $dir."
+    new File(dir, 'Procfile').text = "${project.name}: java -jar ${jar.archiveFileName.get()}"
+}
+
+task ebPackage(type: Copy) {
+    def ebDeployDir = "${project.projectDir}/ebpackage"
+    doFirst {
+        println "Packaging the app for eb."
+        delete(ebDeployDir)
+    }
+    from bootJar
+    into ebDeployDir
+    doLast {
+        addProcfile(ebDeployDir)
+        println "Packaging done."
+    }
+}
+
+bootJar.finalizedBy ebPackage
