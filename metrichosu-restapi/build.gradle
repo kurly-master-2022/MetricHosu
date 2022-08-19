@@ -19,7 +19,8 @@ dependencies {
 
 def addProcfile(String dir) {
     println "Creating a Procfile at $dir."
-    new File(dir, 'Procfile').text = "${project.name}: java -jar ${jar.archiveFileName.get()}"
+    new File(dir, 'Procfile').text =
+            "${project.name}:  java -jar -Dserver.port=5000  ${jar.archiveFileName.get()}"
 }
 
 task ebPackage(type: Copy) {
