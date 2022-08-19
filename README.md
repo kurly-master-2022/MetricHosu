@@ -42,5 +42,18 @@ S3MetricCollector가 메트릭을 읽어들이는 원본 버킷입니다.
 1. 루트 프로젝트> `build.gradle`> `version` 설정
 2. 루트 프로젝트 폴더에서 `make` 명령어
 3. SAM의 Deploy 절차가 끝나고, 출력되는 엔드포인트에 접속하여 REST API 서버가 살아있는지 확인.
-   
+
+# Prerequsites
+
+## AWS CLI, AWS SAM CLI 설치
+- [AWS CLI 설치](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [AWS SAM CLI 설치](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+
+## AWS CLI 프로필 설정
+`kurly`라는 이름의 프로필을 만들고 유저의 AWS 액세스 키와 시크릿 키를 등록해 주세요.
+
+`make auth` 명령어로 진행 가능합니다.
+
+<img width="697" alt="스크린샷 2022-08-19 오후 1 19 04" src="https://user-images.githubusercontent.com/15683098/185542689-f9d0c6b2-344f-40bc-b463-6a552c70b70b.png">
+
 (끝)
