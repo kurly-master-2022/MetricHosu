@@ -7,7 +7,7 @@ import org.metrichosu.restapi.workflow.client.AlarmClient;
 import org.metrichosu.restapi.workflow.client.TriggerClient;
 import org.metrichosu.restapi.workflow.entity.Metric;
 import org.metrichosu.restapi.workflow.entity.WorkflowDefinition;
-import org.metrichosu.restapi.workflow.infra.MetricWorkflowDynamoAdapter;
+import org.metrichosu.restapi.workflow.dynamo.MetricWorkflowDynamoAdapter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WorkflowService {
 
-    //TODO : make this final
-    private MetricWorkflowDynamoAdapter dynamoAdapter;
+    private final MetricWorkflowDynamoAdapter dynamoAdapter;
     private final AlarmClient alarmClient;
     private final TriggerClient triggerClient;
 
@@ -28,6 +27,7 @@ public class WorkflowService {
         if (this.contains(definition))
             return false;
         try {
+            dynamoAdapter.save(definition);
             alarmClient.register(definition.getAlarm());
             triggerClient.register(definition.getTrigger());
         } catch (Exception e) {

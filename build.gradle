@@ -23,6 +23,7 @@ allprojects {
         jacksonVersion = '2.11.4'
         lombokVersion = '1.18.24'
         derjustVersion = '5.1.0'
+        boostchickenVersion = '5.2.5'
     }
 
     dependencies {

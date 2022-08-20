@@ -9,22 +9,22 @@ import lombok.*;
 @ToString
 @Getter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Alarm {
 
     private static final String ID_PREFIX = "metrichosu-alarm-";
 
-    private final Metric metric;
+    private Metric metric;
 
     @Builder.Default
-    private final int assessPeriod = 60;
+    private int assessPeriod = 60;
 
     @Builder.Default
-    private final int evaluationPeriods = 1;
+    private int evaluationPeriods = 1;
 
-    private final double threshold;
+    private double threshold;
 
-    private final AlarmComparator comparator;
+    private AlarmComparator comparator;
 
     public String getId() {
         return ID_PREFIX + metric.getId();

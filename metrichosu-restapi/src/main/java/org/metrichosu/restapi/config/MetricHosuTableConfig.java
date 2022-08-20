@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Configuration;
  * @author jbinchoo
  * @since 2022/08/21
  */
-@EnableDynamoDBRepositories(basePackages = "org.metrichosu.restapi.workflow.infra")
+@EnableDynamoDBRepositories(
+        basePackages = "org.metrichosu.restapi.infra")
 @Configuration
 public class MetricHosuTableConfig {
 }

@@ -11,7 +11,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation "com.amazonaws:aws-java-sdk-dynamodb:${awsSdkVersion}"
-    implementation "com.github.derjust:spring-data-dynamodb:${derjustVersion}"
+    implementation "io.github.boostchicken:spring-data-dynamodb:${boostchickenVersion}"
     implementation "com.amazonaws:aws-java-sdk-cloudwatch:${awsSdkVersion}"
     implementation "com.amazonaws:aws-java-sdk-events:${awsSdkVersion}"
     implementation "com.amazonaws:aws-java-sdk-cloudformation:${awsSdkVersion}"

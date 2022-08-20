@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class DynamoDBConfig {
 
     @Bean
-    public AmazonDynamoDB dynamoDB() {
+    public AmazonDynamoDB amazonDynamoDB() {
         return AmazonDynamoDBClientBuilder.defaultClient();
     }
 }
