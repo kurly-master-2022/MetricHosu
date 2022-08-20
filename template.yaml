@@ -27,6 +27,9 @@ Resources:
         - AttributeName: pk
           KeyType: HASH
 
+  MetricHosuTopic:
+    Type: AWS::SNS::Topic
+
   ExternMetricCollector:
     Type: AWS::Serverless::Function
     Properties:
@@ -91,9 +94,9 @@ Resources:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
           Value: !Ref MetricHosuRestApiInstanceRole
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: EnvironmentType
-          Value: SingleInstance
+#        - Namespace: aws:elasticbeanstalk:environment
+#          OptionName: EnvironmentType
+#          Value: SingleInstance
 
   MetricHosuRestApiEnv:
     Type: AWS::ElasticBeanstalk::Environment
