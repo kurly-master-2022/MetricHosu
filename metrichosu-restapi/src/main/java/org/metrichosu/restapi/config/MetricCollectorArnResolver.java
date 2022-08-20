@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class MetricCollectorArnResolver {
     @Autowired
     private AmazonCloudFormation cloudFormation;
 
+    @Lazy
     @Bean(name = "metric-collector-arn")
     public String resolve() {
         List<Stack> candidates = cloudFormation.describeStacks(
@@ -36,6 +38,6 @@ public class MetricCollectorArnResolver {
             if (o.getOutputKey().equals(OUTPUT_LABEL))
                 return o.getOutputValue();
 
-        throw new IllegalStateException("MetricHosu stack does not have ExternMetricCollector");
+        throw new IllegalStateException("MetricHosu stack does not have ExternMetricCollector.");
     }
 }
