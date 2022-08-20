@@ -18,6 +18,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 @SpringBootApplication
 public class MetricHosuRestApiApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MetricHosuRestApiApplication.class);
+        SpringApplication app = new SpringApplication(MetricHosuRestApiApplication.class);
+        app.setAdditionalProfiles("test");
+        app.run();
     }
 }
