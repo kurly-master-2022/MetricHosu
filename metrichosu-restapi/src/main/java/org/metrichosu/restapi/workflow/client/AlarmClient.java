@@ -2,6 +2,7 @@ package org.metrichosu.restapi.workflow.client;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.model.ComparisonOperator;
+import com.amazonaws.services.cloudwatch.model.DeleteAlarmsRequest;
 import com.amazonaws.services.cloudwatch.model.PutMetricAlarmRequest;
 import com.amazonaws.services.cloudwatch.model.Statistic;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,10 @@ public class AlarmClient {
                         .withThreshold(alarm.getThreshold())
                         .withComparisonOperator(ComparisonOperator.fromValue(alarm.getComparator().toString()))
         );
+    }
+
+    public void delete(Alarm alarm) {
+        cloudwath.deleteAlarms(
+                new DeleteAlarmsRequest().withAlarmNames(alarm.getId()));
     }
 }

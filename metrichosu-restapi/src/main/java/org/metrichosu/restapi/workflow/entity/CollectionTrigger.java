@@ -11,25 +11,28 @@ import java.util.Objects;
  * @since 2022/08/21
  */
 @ToString
-@Builder
 @Getter
+@Builder
 public class CollectionTrigger {
 
     private static final String RULE_ID_PREFIX = "metrichosu-rule-";
     private static final String TARGET_ID_PREFIX = "metrichosu-target-";
-    private static final String DUMMY_SCHED_CRON = "0 0 1 * ? 2020";
 
     private final Metric metric;
     private final boolean scheduled;
     private final String schedCron;
+    private final boolean enabled;
 
-    public CollectionTrigger(Metric metric, boolean scheduled, String schedCron) {
+    public CollectionTrigger(Metric metric, boolean scheduled, String schedCron, boolean enabled) {
         this.metric = metric;
         this.scheduled = scheduled;
-        this.schedCron = scheduled? wrapCron(Objects.requireNonNull(schedCron)) : DUMMY_SCHED_CRON;
+        this.schedCron = scheduled? wrapCron(Objects.requireNonNull(schedCron)) : null;
+        this.enabled = enabled;
     }
 
     private String wrapCron(String cronExpression) {
+        if (cronExpression.contains("(") && cronExpression.contains(")"))
+            return cronExpression;
         return String.format("cron(%s)", cronExpression);
     }
 
@@ -39,9 +42,5 @@ public class CollectionTrigger {
 
     public String getTargetId() {
         return TARGET_ID_PREFIX + metric.getId();
-    }
-
-    public String getMetricId() {
-        return metric.getId();
     }
 }

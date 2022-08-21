@@ -5,6 +5,7 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jbinchoo
@@ -13,7 +14,7 @@ import java.util.List;
 @EnableScan
 public interface WorkflowDynamoRepository extends CrudRepository<WorkflowDefinitionItem, String> {
 
-    WorkflowDefinitionItem findByPk(String metricId);
+    Optional<WorkflowDefinitionItem> findByPk(String metricId);
 
     List<WorkflowDefinitionItem> findAll();
 

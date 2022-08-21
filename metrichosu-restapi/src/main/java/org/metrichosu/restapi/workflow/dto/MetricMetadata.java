@@ -28,6 +28,7 @@ public class MetricMetadata {
     private AlarmComparator alarmComparator;
 
     private boolean scheduled;
+    private boolean enabled = false;
     private String schedCron;
     private String metricSourceUri;
 
@@ -46,22 +47,7 @@ public class MetricMetadata {
                         .evaluationPeriods(alarmEvaluationPeriods)
                         .threshold(alarmThreshold)
                         .comparator(alarmComparator).build())
-                .trigger(new CollectionTrigger(m, scheduled, schedCron))
+                .trigger(new CollectionTrigger(m, scheduled, schedCron, enabled))
                 .build();
-    }
-
-    public MetricMetadata(WorkflowDefinition definition) {
-        Metric m = definition.getMetric();
-        Alarm a = definition.getAlarm();
-        CollectionTrigger t = definition.getTrigger();
-        this.metricId = m.getId();
-        this.metricName = m.getName();
-        this.alarmAssessPeriod = a.getAssessPeriod();
-        this.alarmEvaluationPeriods = a.getEvaluationPeriods();
-        this.alarmComparator = a.getComparator();
-        this.alarmThreshold = a.getThreshold();
-        this.scheduled = t.isScheduled();
-        this.schedCron = t.getSchedCron();
-        this.metricSourceUri = m.getMetricSourceUri();
     }
 }

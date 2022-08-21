@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -19,11 +20,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
-    @ResponseBody
     @Override
+    @ResponseBody
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("Invalid method argument found.", ex);
-        return ValidationError.badRequest(ex, headers, status);
+        return ValidationError.badRequest(ex, headers);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    private ResponseEntity<Object> handleIllegalStateException(IllegalStateException ex) {
+        return ValidationError.badRequest(ex);
     }
 }

@@ -43,7 +43,7 @@ class TriggerClientTest {
 
     @Test
     void register() {
-        client.register(CollectionTrigger.builder()
+        client.putCollectionTrigger(CollectionTrigger.builder()
                 .metric(Metric.builder()
                         .id(RandomString.make(7))
                         .name("안녕-메트릭호수-규칙")

@@ -7,6 +7,7 @@ import org.metrichosu.restapi.workflow.entity.WorkflowDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -23,8 +24,9 @@ public class MetricWorkflowDynamoAdapter {
         return repository.save(WorkflowDefinitionItem.fromEntity(definition)).toEntity();
     }
 
-    public WorkflowDefinition findByMetricId(String metricId) {
-        return repository.findByPk(metricId).toEntity();
+    public Optional<WorkflowDefinition> findByMetricId(String metricId) {
+        return repository.findByPk(metricId)
+                .map(WorkflowDefinitionItem::toEntity);
     }
 
     public List<WorkflowDefinition> findAll() {

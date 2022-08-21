@@ -1,7 +1,6 @@
 package org.metrichosu.restapi.workflow.client;
 
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEvents;
-import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEventsClient;
 import com.amazonaws.services.cloudwatchevents.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.metrichosu.restapi.workflow.entity.CollectionTrigger;
@@ -28,22 +27,23 @@ public class TriggerClient {
         this.events = events;
     }
 
-    public void register(CollectionTrigger trigger) {
-        registerRule(trigger);
-        var putTargetsResult = registerTarget(trigger);
-        assert putTargetsResult.getFailedEntryCount() == 0;
+    public void putCollectionTrigger(CollectionTrigger trigger) {
+        if (trigger.isScheduled()) {
+            this.putCollectionTriggerWithState(trigger, trigger.isEnabled());
+            PutTargetsResult putTargetsResult = this.putTarget(trigger);
+            assert putTargetsResult.getFailedEntryCount() == 0;
+        }
     }
 
-    private PutRuleResult registerRule(CollectionTrigger trigger) {
-        log.info(trigger.toString());
-        return events.putRule(
-                new PutRuleRequest()
-                        .withName(trigger.getRuleId())
-                        .withState(RuleState.DISABLED)
-                        .withScheduleExpression(trigger.getSchedCron()));
+    public void putCollectionTriggerWithState(CollectionTrigger trigger, boolean state) {
+            events.putRule(
+                    new PutRuleRequest()
+                            .withName(trigger.getRuleId())
+                            .withState(state? RuleState.ENABLED : RuleState.DISABLED)
+                            .withScheduleExpression(trigger.getSchedCron()));
     }
 
-    private PutTargetsResult registerTarget(CollectionTrigger trigger) {
+    private PutTargetsResult putTarget(CollectionTrigger trigger) {
         return events.putTargets(
                 new PutTargetsRequest()
                         .withRule(trigger.getRuleId())
@@ -54,7 +54,23 @@ public class TriggerClient {
         );
     }
 
+    public RuleState getRuleState(CollectionTrigger trigger) {
+        return RuleState.valueOf(events.describeRule(
+                new DescribeRuleRequest().withName(trigger.getRuleId())).getState());
+    }
+
     public void setMetricCollectorArn(String metricCollectorArn) {
         this.metricCollectorArn = metricCollectorArn;
+    }
+
+    public void delete(CollectionTrigger trigger) {
+        events.removeTargets(new RemoveTargetsRequest()
+                .withForce(true)
+                .withRule(trigger.getRuleId())
+                .withIds(trigger.getTargetId()));
+
+        events.deleteRule(new DeleteRuleRequest()
+                .withForce(true)
+                .withName(trigger.getRuleId()));
     }
 }

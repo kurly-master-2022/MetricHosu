@@ -1,8 +1,10 @@
 package org.metrichosu.restapi.infra;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.metrichosu.restapi.workflow.entity.*;
 import org.springframework.scheduling.Trigger;
 
@@ -13,6 +15,8 @@ import org.springframework.scheduling.Trigger;
 @Data
 @Builder
 @DynamoDBTable(tableName = "metrichosu")
+@NoArgsConstructor // required
+@AllArgsConstructor
 public class WorkflowDefinitionItem {
 
     @DynamoDBHashKey
@@ -71,7 +75,7 @@ public class WorkflowDefinitionItem {
         return WorkflowDefinition.builder()
                 .metric(m)
                 .alarm(new Alarm(m, alarmAssessPeriod, alarmEvaluationPeriods, alarmThreshold, alarmComparator))
-                .trigger(new CollectionTrigger(m, scheduled, schedCron))
+                .trigger(new CollectionTrigger(m, scheduled, schedCron, false))
                 .build();
     }
 }

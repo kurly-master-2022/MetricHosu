@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
+import java.util.Map;
+
 @EnableAutoConfiguration(exclude = {
         DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class,
@@ -20,6 +22,7 @@ public class MetricHosuRestApiApplication {
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(MetricHosuRestApiApplication.class);
         app.setAdditionalProfiles("test");
+        app.setDefaultProperties(Map.of("server.error.include-message", "always"));
         app.run();
     }
 }
