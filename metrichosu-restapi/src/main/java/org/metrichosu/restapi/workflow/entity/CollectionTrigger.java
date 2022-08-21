@@ -17,27 +17,20 @@ public class CollectionTrigger {
 
     private static final String RULE_ID_PREFIX = "metrichosu-rule-";
     private static final String TARGET_ID_PREFIX = "metrichosu-target-";
-
     private static final String DUMMY_SCHED_CRON = "0 0 1 * ? 2020";
 
     private final Metric metric;
-
     private final boolean scheduled;
-
     private final String schedCron;
 
     public CollectionTrigger(Metric metric, boolean scheduled, String schedCron) {
         this.metric = metric;
         this.scheduled = scheduled;
-        this.schedCron = scheduled? wrapCron(Objects.requireNonNull(schedCron)) : schedCron;
+        this.schedCron = scheduled? wrapCron(Objects.requireNonNull(schedCron)) : DUMMY_SCHED_CRON;
     }
 
     private String wrapCron(String cronExpression) {
         return String.format("cron(%s)", cronExpression);
-    }
-
-    public String getSchedCron() {
-        return scheduled? schedCron : DUMMY_SCHED_CRON;
     }
 
     public String getRuleId() {

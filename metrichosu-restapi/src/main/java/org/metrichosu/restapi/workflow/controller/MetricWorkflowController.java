@@ -3,10 +3,11 @@ package org.metrichosu.restapi.workflow.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.metrichosu.restapi.workflow.service.WorkflowService;
-import org.metrichosu.restapi.workflow.vo.MetricMetadata;
+import org.metrichosu.restapi.workflow.dto.MetricMetadata;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author jbinchoo
@@ -20,17 +21,17 @@ public class MetricWorkflowController {
 
     private final WorkflowService service;
 
-    @GetMapping("/{mid}")
-    public ResponseEntity<?> describeWorkflow(@PathVariable("mid") String metricId) {
-        return ResponseEntity.ok("Hello MetricHosu!");
+    @PostMapping
+    public ResponseEntity<?> createWorkflow(@Valid @RequestBody MetricMetadata metadata) {
+        log.debug(metadata.toString());
+        System.out.println(metadata.toString());
+        service.createWorkflow(metadata.toEntity());
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping
-    public ResponseEntity<?> createWorkflow(@RequestBody MetricMetadata metadata,
-                                            BindingResult bResult) {
-        log.info("bindingResult: {} / {}", bResult, metadata);
-        boolean created = service.createWorkflow(metadata.getWorkflowDefinition());
-        return created? ResponseEntity.ok(created)
-                : ResponseEntity.badRequest().body("The metric already exists.");
+    // TODO: 무엇을 반환할 것인가?
+    @GetMapping("/{mid}")
+    public MetricMetadata describeWorkflow(@PathVariable("mid") String metricId) {
+        return new MetricMetadata(service.findByMetricId(metricId));
     }
 }

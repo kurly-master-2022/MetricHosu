@@ -1,9 +1,6 @@
 package org.metrichosu.restapi.workflow.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * @author jbinchoo
@@ -12,10 +9,10 @@ import lombok.ToString;
 @ToString
 @Getter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Metric {
 
     private final String id;
-
     private final String name;
+    private final String metricSourceUri;
 }

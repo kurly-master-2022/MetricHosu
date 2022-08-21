@@ -39,7 +39,7 @@ public class TriggerClient {
         return events.putRule(
                 new PutRuleRequest()
                         .withName(trigger.getRuleId())
-                        .withState(trigger.isScheduled()? RuleState.ENABLED : RuleState.DISABLED)
+                        .withState(RuleState.DISABLED)
                         .withScheduleExpression(trigger.getSchedCron()));
     }
 

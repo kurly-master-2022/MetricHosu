@@ -13,7 +13,6 @@ import lombok.*;
 public class Alarm {
 
     private static final String ID_PREFIX = "metrichosu-alarm-";
-
     private Metric metric;
 
     @Builder.Default
@@ -23,7 +22,6 @@ public class Alarm {
     private int evaluationPeriods = 1;
 
     private double threshold;
-
     private AlarmComparator comparator;
 
     public String getId() {

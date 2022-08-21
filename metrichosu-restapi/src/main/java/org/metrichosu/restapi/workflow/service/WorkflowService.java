@@ -8,6 +8,7 @@ import org.metrichosu.restapi.workflow.client.TriggerClient;
 import org.metrichosu.restapi.workflow.entity.Metric;
 import org.metrichosu.restapi.workflow.entity.WorkflowDefinition;
 import org.metrichosu.restapi.workflow.dynamo.MetricWorkflowDynamoAdapter;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,9 +24,10 @@ public class WorkflowService {
     private final AlarmClient alarmClient;
     private final TriggerClient triggerClient;
 
-    public boolean createWorkflow(WorkflowDefinition definition) {
+    // TODO: 롤백을 완벽하게 수행하라.
+    public WorkflowDefinition createWorkflow(WorkflowDefinition definition) {
         if (this.contains(definition))
-            return false;
+            return null;
         try {
             dynamoAdapter.save(definition);
             alarmClient.register(definition.getAlarm());
@@ -33,9 +35,9 @@ public class WorkflowService {
         } catch (Exception e) {
             log.error(definition.toString());
             log.error("Failed to create a metric workflow.", e);
-            return false;
+            return null;
         }
-        return true;
+        return definition;
     }
 
     public boolean contains(WorkflowDefinition workflow) {
@@ -48,6 +50,10 @@ public class WorkflowService {
 
     public boolean contains(String metricId) {
         return false;
+    }
+
+    public WorkflowDefinition findByMetricId(String metricId) {
+        return dynamoAdapter.findByMetricId(metricId);
     }
 }
 

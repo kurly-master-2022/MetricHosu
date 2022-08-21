@@ -44,6 +44,9 @@ public class WorkflowDefinitionItem {
     @DynamoDBAttribute(attributeName = "#WorkflowDefinition#sched_cron")
     private String schedCron;
 
+    @DynamoDBAttribute(attributeName = "#WorkflowDefinition#metric_uri")
+    private String metricUri;
+
     public static WorkflowDefinitionItem fromEntity(WorkflowDefinition definition) {
         Metric m = definition.getMetric();
         String mid = m.getId(), mname = m.getName();
@@ -64,7 +67,7 @@ public class WorkflowDefinitionItem {
     }
 
     public WorkflowDefinition toEntity() {
-        Metric m = new Metric(metricId, metricName);
+        Metric m = new Metric(metricId, metricName, metricUri);
         return WorkflowDefinition.builder()
                 .metric(m)
                 .alarm(new Alarm(m, alarmAssessPeriod, alarmEvaluationPeriods, alarmThreshold, alarmComparator))

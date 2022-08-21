@@ -16,8 +16,6 @@ import lombok.ToString;
 public class WorkflowDefinition {
 
     private final Metric metric;
-
     private final Alarm alarm;
-
     private final CollectionTrigger trigger;
 }

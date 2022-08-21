@@ -21,5 +21,5 @@ public interface WorkflowDynamoRepository extends CrudRepository<WorkflowDefinit
 
     void deleteByPk(String metricId);
 
-    boolean containsByMetricId(String metricId);
+    boolean existsByMetricId(String metricId);
 }
