@@ -46,4 +46,8 @@ public class MetricWorkflowDynamoAdapter {
     public void deleteByMetricId(String metricId) {
         repository.deleteByPk(metricId);
     }
+
+    public boolean containsByMetricId(String metricId) {
+        return repository.containsByMetricId(metricId);
+    }
 }

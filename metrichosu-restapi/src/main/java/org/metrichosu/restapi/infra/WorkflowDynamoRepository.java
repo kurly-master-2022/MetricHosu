@@ -20,4 +20,6 @@ public interface WorkflowDynamoRepository extends CrudRepository<WorkflowDefinit
     List<WorkflowDefinitionItem> findAllByPk(String... metricIds);
 
     void deleteByPk(String metricId);
+
+    boolean containsByMetricId(String metricId);
 }
