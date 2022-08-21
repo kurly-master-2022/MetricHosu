@@ -28,6 +28,9 @@ public class WorkflowDefinitionItem {
     @DynamoDBAttribute(attributeName = "#WorkflowDefinition#metric_name")
     private String metricName;
 
+    @DynamoDBAttribute(attributeName = "#WorkflowDefinition#metric_source_uri")
+    private String metricSourceUri;
+
     @DynamoDBAttribute(attributeName = "#WorkflowDefinition#alarm_assess_period")
     private int alarmAssessPeriod;
 
@@ -48,12 +51,9 @@ public class WorkflowDefinitionItem {
     @DynamoDBAttribute(attributeName = "#WorkflowDefinition#sched_cron")
     private String schedCron;
 
-    @DynamoDBAttribute(attributeName = "#WorkflowDefinition#metric_uri")
-    private String metricUri;
-
     public static WorkflowDefinitionItem fromEntity(WorkflowDefinition definition) {
         Metric m = definition.getMetric();
-        String mid = m.getId(), mname = m.getName();
+        String mid = m.getId(), mname = m.getName(), uri = m.getMetricSourceUri();
 
         Alarm a = definition.getAlarm();
         CollectionTrigger t = definition.getTrigger();
@@ -61,6 +61,7 @@ public class WorkflowDefinitionItem {
         return WorkflowDefinitionItem.builder()
                 .metricId(mid).pk(mid)
                 .metricName(mname)
+                .metricSourceUri(uri)
                 .alarmAssessPeriod(a.getAssessPeriod())
                 .alarmEvaluationPeriods(a.getEvaluationPeriods())
                 .alarmThreshold(a.getThreshold())
@@ -71,7 +72,7 @@ public class WorkflowDefinitionItem {
     }
 
     public WorkflowDefinition toEntity() {
-        Metric m = new Metric(metricId, metricName, metricUri);
+        Metric m = new Metric(metricId, metricName, metricSourceUri);
         return WorkflowDefinition.builder()
                 .metric(m)
                 .alarm(new Alarm(m, alarmAssessPeriod, alarmEvaluationPeriods, alarmThreshold, alarmComparator))
