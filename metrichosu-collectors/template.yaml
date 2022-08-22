@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  metrichosu
+
+  SAM Template for metrichosu-collectors
+
+Globals:
+  Function:
+    Timeout: 480
+
+Resources:
+  MetricHosuBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub metrichosu-${AWS::Region}
+
+  MetricHosuTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: metrichosu
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+
+  ExternMetricCollector:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../metrichosu-collectors
+      Handler: org.metrichosu.mcollect.ExternMetricCollector::handle
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MetricHosuTable
+        - CloudWatchPutMetricPolicy: {}
+        - CloudWatchDashboardPolicy: {}
+
+  S3MetricCollector:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../metrichosu-collectors
+      Handler: org.metrichosu.mcollect.S3MetricCollector::handle
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Events:
+        S3NewMetricDataEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref MetricHosuBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: json
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Sub metrichosu-${AWS::Region}
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MetricHosuTable
+        - CloudWatchPutMetricPolicy: {}
+        - CloudWatchDashboardPolicy: {}
+
+Outputs:
+  ExternMetricCollectorFunction:
+    Description: "Extern Metric Collector ARN"
+    Value: !GetAtt ExternMetricCollector.Arn
+
+  S3MetricCollectorFunction:
+    Description: "S3 Metric Collector ARN"
+    Value: !GetAtt S3MetricCollector.Arn

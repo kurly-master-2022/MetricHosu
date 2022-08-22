@@ -39,9 +39,15 @@ S3MetricCollector가 메트릭을 읽어들이는 원본 버킷입니다.
 따라서 S3 버킷 아이템 추가시 S3MetricCollector 람다가 반응합니다.
 
 # Deployment 절차
-1. 루트 프로젝트> `build.gradle`> `version` 설정
-2. 루트 프로젝트 폴더에서 `make` 명령어
-3. SAM의 Deploy 절차가 끝나고, 출력되는 엔드포인트에 접속하여 REST API 서버가 살아있는지 확인.
+
+## metrichosu-collectors 스택 배포
+1. 루트 프로젝트 폴더에서 `make collectors` 명령어
+2. 2가 안될 경우 1회에 한해 `metrichosu-collectors` 폴더> `sam build & sam deploy --guided` 진행
+
+## metrichosu-restapi 스택 배포
+1. 루트 프로젝트> `build.gradle`> `version` 설정 (또는, gradle 태스크에 `-Pversion`을 주입하기)
+2. 루트 프로젝트 폴더에서 `make restapi` 명령어
+3. 2가 안될 경우 1회에 한해 `metrichosu-restapi` 폴더> `sam build & sam deploy --guided` 진행
 
 # Prerequsites
 

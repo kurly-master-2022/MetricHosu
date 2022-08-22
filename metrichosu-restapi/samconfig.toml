@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "metrichosu-restapi"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1xvux24no0u9c"
+s3_prefix = "metrichosu-restapi"
+region = "ap-northeast-2"
+profile = "kurly"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "CertificateArn=\"arn:aws:acm:ap-northeast-2:948605357278:certificate/f619212b-90ae-4491-8683-cc949467d76e\""
+image_repositories = []

@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MetricCollectorArnResolver {
 
-    private static final String STACK_NAME = "metrichosu";
+    private static final String STACK_NAME = "metrichosu-collectors"; // TODO: 의존성 나이브 선언 없애기
     private static final String OUTPUT_LABEL = "ExternMetricCollectorFunction";
 
     @Autowired

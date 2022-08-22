@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  metrichosu
+
+  SAM Template for metrichosu-restapi & SNS topic
+
+Globals:
+  Function:
+    Timeout: 480
+
+Parameters:
+  CertificateArn:
+    Type: String
+    Default: arn:aws:acm:ap-northeast-2:948605357278:certificate/f619212b-90ae-4491-8683-cc949467d76e
+
+Resources:
+  MetricHosuRestApiApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: MetricHosu REST API
+      ApplicationName: metrichosu-restapi
+
+  MetricHosuRestApiVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+       ApplicationName: !Ref MetricHosuRestApiApplication
+       SourceBundle: ebpackage
+
+  MetricHosuRestApiConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref MetricHosuRestApiApplication
+      SolutionStackName: 64bit Amazon Linux 2 v3.3.1 running Corretto 11
+      OptionSettings:
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerType
+          Value: application
+        - Namespace: aws:elbv2:listener:443
+          OptionName: DefaultProcess
+          Value: default
+        - Namespace: aws:elbv2:listener:443
+          OptionName: Protocol
+          Value: HTTPS
+        - Namespace: aws:elbv2:listener:443
+          OptionName: SSLCertificateArns
+          Value: !Ref CertificateArn
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref MetricHosuRestApiInstanceRole
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateEnabled
+          Value: true
+
+  MetricHosuRestApiEnv:
+    Type: AWS::ElasticBeanstalk::Environment
+    DependsOn: MetricHosuRestApiVersion
+    Properties:
+      ApplicationName: !Ref MetricHosuRestApiApplication
+      TemplateName: !Ref MetricHosuRestApiConfigurationTemplate
+      VersionLabel: !Ref MetricHosuRestApiVersion
+
+  MetricHosuRestApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchEventsFullAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+  MetricHosuRestApiInstanceRole:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref MetricHosuRestApiRole
+
+Outputs:
+  MetricHosuRestApiAddress:
+    Description: "MetricHosu REST API Address"
+    Value: !Sub
+      - 'http://${EndpointURL}'
+      - EndpointURL: !GetAtt MetricHosuRestApiEnv.EndpointURL
