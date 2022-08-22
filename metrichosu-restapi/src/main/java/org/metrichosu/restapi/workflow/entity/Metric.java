@@ -14,5 +14,6 @@ public class Metric {
 
     private final String id;
     private final String name;
-    private final String metricSourceUri;
+    private final String sourceUri;
+    private final MetricType metricType;
 }

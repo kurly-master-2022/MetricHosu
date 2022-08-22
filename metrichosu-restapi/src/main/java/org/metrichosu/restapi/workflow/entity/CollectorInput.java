@@ -9,11 +9,11 @@ import lombok.Data;
  * @since 2022/08/21
  */
 @Data
-public class MetricInput {
+public class CollectorInput {
 
     private String mid;
 
-    public MetricInput(Metric metric) {
+    public CollectorInput(Metric metric) {
         this.mid = metric.getId();
     }
 

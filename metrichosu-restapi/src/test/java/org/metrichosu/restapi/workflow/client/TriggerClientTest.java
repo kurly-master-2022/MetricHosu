@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.metrichosu.restapi.testconfig.AWSClientsConfig;
 import org.metrichosu.restapi.config.MetricCollectorArnResolver;
-import org.metrichosu.restapi.workflow.entity.CollectionTrigger;
+import org.metrichosu.restapi.workflow.entity.CollectorTrigger;
 import org.metrichosu.restapi.workflow.entity.Metric;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -43,13 +43,12 @@ class TriggerClientTest {
 
     @Test
     void register() {
-        client.putCollectionTrigger(CollectionTrigger.builder()
+        client.putTrigger(CollectorTrigger.builder()
                 .metric(Metric.builder()
                         .id(RandomString.make(7))
                         .name("안녕-메트릭호수-규칙")
                         .build())
                 .schedCron("0 9 * * ? *")
-                .scheduled(true)
                 .build());
     }
 }

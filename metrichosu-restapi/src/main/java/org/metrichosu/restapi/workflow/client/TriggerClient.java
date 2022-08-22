@@ -3,8 +3,8 @@ package org.metrichosu.restapi.workflow.client;
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEvents;
 import com.amazonaws.services.cloudwatchevents.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.metrichosu.restapi.workflow.entity.CollectionTrigger;
-import org.metrichosu.restapi.workflow.entity.MetricInput;
+import org.metrichosu.restapi.workflow.entity.CollectorInput;
+import org.metrichosu.restapi.workflow.entity.CollectorTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -27,15 +27,15 @@ public class TriggerClient {
         this.events = events;
     }
 
-    public void putCollectionTrigger(CollectionTrigger trigger) {
-        if (trigger.isScheduled()) {
-            this.putCollectionTriggerWithState(trigger, trigger.isEnabled());
+    public void putTrigger(CollectorTrigger trigger) {
+        if (trigger != null) {
+            this.putCollectorTriggerWithState(trigger, trigger.isEnabled());
             PutTargetsResult putTargetsResult = this.putTarget(trigger);
             assert putTargetsResult.getFailedEntryCount() == 0;
         }
     }
 
-    public void putCollectionTriggerWithState(CollectionTrigger trigger, boolean state) {
+    public void putCollectorTriggerWithState(CollectorTrigger trigger, boolean state) {
             events.putRule(
                     new PutRuleRequest()
                             .withName(trigger.getRuleId())
@@ -43,18 +43,18 @@ public class TriggerClient {
                             .withScheduleExpression(trigger.getSchedCron()));
     }
 
-    private PutTargetsResult putTarget(CollectionTrigger trigger) {
+    private PutTargetsResult putTarget(CollectorTrigger trigger) {
         return events.putTargets(
                 new PutTargetsRequest()
                         .withRule(trigger.getRuleId())
                         .withTargets(new Target()
                                 .withId(trigger.getTargetId())
                                 .withArn(metricCollectorArn)
-                                .withInput(new MetricInput(trigger.getMetric()).asJson()))
+                                .withInput(new CollectorInput(trigger.getMetric()).asJson()))
         );
     }
 
-    public RuleState getRuleState(CollectionTrigger trigger) {
+    public RuleState getRuleState(CollectorTrigger trigger) {
         return RuleState.valueOf(events.describeRule(
                 new DescribeRuleRequest().withName(trigger.getRuleId())).getState());
     }
@@ -63,7 +63,7 @@ public class TriggerClient {
         this.metricCollectorArn = metricCollectorArn;
     }
 
-    public void delete(CollectionTrigger trigger) {
+    public void delete(CollectorTrigger trigger) {
         events.removeTargets(new RemoveTargetsRequest()
                 .withForce(true)
                 .withRule(trigger.getRuleId())

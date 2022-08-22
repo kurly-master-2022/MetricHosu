@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.metrichosu.restapi.workflow.entity.*;
-import org.springframework.scheduling.Trigger;
 
 /**
  * @author jbinchoo
@@ -31,6 +30,10 @@ public class WorkflowDefinitionItem {
     @DynamoDBAttribute(attributeName = "#WorkflowDefinition#metric_source_uri")
     private String metricSourceUri;
 
+    @DynamoDBTypeConvertedEnum
+    @DynamoDBAttribute(attributeName = "#WorkflowDefinition#metric_type")
+    private MetricType metricType;
+
     @DynamoDBAttribute(attributeName = "#WorkflowDefinition#alarm_assess_period")
     private int alarmAssessPeriod;
 
@@ -52,31 +55,79 @@ public class WorkflowDefinitionItem {
     private String schedCron;
 
     public static WorkflowDefinitionItem fromEntity(WorkflowDefinition definition) {
-        Metric m = definition.getMetric();
-        String mid = m.getId(), mname = m.getName(), uri = m.getMetricSourceUri();
+        var builder = WorkflowDefinitionItem.builder();
+        builder.scheduled(definition.isScheduled());
+        fromMetric(definition, builder);
+        fromAlarm(definition, builder);
+        fromTrigger(definition, builder);
+        return builder.build();
+    }
 
+    private static void fromTrigger(WorkflowDefinition definition, WorkflowDefinitionItemBuilder builder) {
+        CollectorTrigger t = definition.getTrigger();
+        if (t != null) {
+            builder.schedCron(t.getSchedCron());
+        }
+    }
+
+    private static void fromAlarm(WorkflowDefinition definition, WorkflowDefinitionItemBuilder builder) {
         Alarm a = definition.getAlarm();
-        CollectionTrigger t = definition.getTrigger();
+        if (a != null) {
+            builder.alarmAssessPeriod(a.getAssessPeriod())
+                    .alarmEvaluationPeriods(a.getEvaluationPeriods())
+                    .alarmThreshold(a.getThreshold())
+                    .alarmComparator(a.getComparator());
+        }
+    }
 
-        return WorkflowDefinitionItem.builder()
-                .metricId(mid).pk(mid)
-                .metricName(mname)
-                .metricSourceUri(uri)
-                .alarmAssessPeriod(a.getAssessPeriod())
-                .alarmEvaluationPeriods(a.getEvaluationPeriods())
-                .alarmThreshold(a.getThreshold())
-                .alarmComparator(a.getComparator())
-                .scheduled(t.isScheduled())
-                .schedCron(t.getSchedCron())
-                .build();
+    private static void fromMetric(WorkflowDefinition definition, WorkflowDefinitionItemBuilder builder) {
+        Metric m = definition.getMetric();
+        if (m != null) {
+            String mid = m.getId();
+            builder.scheduled(definition.isScheduled())
+                    .metricId(mid).pk(mid)
+                    .metricName(m.getName())
+                    .metricSourceUri(m.getSourceUri())
+                    .metricType(m.getMetricType());
+        }
     }
 
     public WorkflowDefinition toEntity() {
-        Metric m = new Metric(metricId, metricName, metricSourceUri);
-        return WorkflowDefinition.builder()
-                .metric(m)
-                .alarm(new Alarm(m, alarmAssessPeriod, alarmEvaluationPeriods, alarmThreshold, alarmComparator))
-                .trigger(new CollectionTrigger(m, scheduled, schedCron, false))
+        Metric m = Metric.builder()
+                .id(this.metricId)
+                .name(this.metricName)
+                .sourceUri(this.metricSourceUri)
+                .metricType(this.metricType)
                 .build();
+
+        var builder = WorkflowDefinition.builder();
+        builder.scheduled(this.scheduled);
+
+        injectMetric(builder, m);
+        injectAlarm(builder, m);
+        injectTrigger(builder, m);
+        return builder.build();
+    }
+
+    private void injectMetric(WorkflowDefinition.WorkflowDefinitionBuilder builder, Metric m) {
+        builder.metric(m);
+    }
+
+    private void injectTrigger(WorkflowDefinition.WorkflowDefinitionBuilder builder, Metric m) {
+        if (this.scheduled) {
+            builder.trigger(CollectorTrigger.builder()
+                    .metric(m)
+                    .schedCron(this.schedCron)
+                    .build());
+        }
+    }
+
+    private void injectAlarm(WorkflowDefinition.WorkflowDefinitionBuilder builder, Metric m) {
+        builder.alarm(Alarm.builder()
+                .metric(m)
+                .assessPeriod(this.alarmAssessPeriod)
+                .evaluationPeriods(this.alarmEvaluationPeriods)
+                .threshold(this.alarmThreshold)
+                .comparator(this.alarmComparator).build());
     }
 }
