@@ -15,6 +15,12 @@ Parameters:
     Default: arn:aws:acm:ap-northeast-2:948605357278:certificate/f619212b-90ae-4491-8683-cc949467d76e
 
 Resources:
+  MetricHosuTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      FifoTopic: true
+      TopicName: alarms.fifo
+
   MetricHosuRestApiApplication:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
@@ -87,9 +93,30 @@ Resources:
       Roles:
         - !Ref MetricHosuRestApiRole
 
+  MetricHosuRestApiDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: metrichosu.net.
+      Comment: Zone apex alias targeted to ALB of MetricHosu REST API
+      RecordSets:
+        - Name: restapi.metrichosu.net.
+          Type: CNAME
+          TTL: 900
+          ResourceRecords:
+            - !GetAtt MetricHosuRestApiEnv.EndpointURL
+
 Outputs:
+  MetricHosuTopicArn:
+    Description: "MetricHosu Topic ARN for Alarm Subscribers"
+    Value: !Ref MetricHosuTopic
+
   MetricHosuRestApiAddress:
     Description: "MetricHosu REST API Address"
-    Value: !Sub
-      - 'http://${EndpointURL}'
-      - EndpointURL: !GetAtt MetricHosuRestApiEnv.EndpointURL
+    Value: !Join
+      - ", "
+      - - !Sub
+          - 'http://${EndpointURL}'
+          - EndpointURL: !GetAtt MetricHosuRestApiEnv.EndpointURL
+        - !Sub
+          - 'https://${EndpointURL}'
+          - EndpointURL: !GetAtt MetricHosuRestApiEnv.EndpointURL

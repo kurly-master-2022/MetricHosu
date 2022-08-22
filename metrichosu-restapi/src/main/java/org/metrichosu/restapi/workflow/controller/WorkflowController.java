@@ -29,7 +29,7 @@ public class WorkflowController {
         return returnDto(definition);
     }
 
-    @PutMapping("{mid}")
+    @PutMapping("/{mid}")
     public WorkflowDefinitionDto enableTrigger(@PathVariable("mid") String metricId,
                                                @RequestParam("enabled") boolean enabled) {
         WorkflowDefinition definition = this.workflowService.putWorkflowState(metricId, enabled);
