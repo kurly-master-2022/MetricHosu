@@ -23,10 +23,16 @@ public class WorkflowController {
 
     private final WorkflowService workflowService;
 
-
     @PutMapping
     public WorkflowDefinitionDto putWorkflow(@Valid @RequestBody MetricForm metadata) {
         WorkflowDefinition definition = this.workflowService.putWorkflow(metadata.toWorkflowDefinition());
+        return returnDto(definition);
+    }
+
+    @PutMapping("{mid}")
+    public WorkflowDefinitionDto enableTrigger(@PathVariable("mid") String metricId,
+                                               @RequestParam("enabled") boolean enabled) {
+        WorkflowDefinition definition = this.workflowService.putWorkflowState(metricId, enabled);
         return returnDto(definition);
     }
 
@@ -36,12 +42,6 @@ public class WorkflowController {
         return returnDto(definition);
     }
 
-    @PostMapping("{mid}")
-    public WorkflowDefinitionDto enableTrigger(@PathVariable("mid") String metricId,
-                                               @RequestParam("enabled") boolean enabled) {
-        WorkflowDefinition definition = this.workflowService.putWorkflowState(metricId, enabled);
-        return returnDto(definition);
-    }
 
     private WorkflowDefinitionDto returnDto(WorkflowDefinition definition) {
         log.debug(definition.toString());
