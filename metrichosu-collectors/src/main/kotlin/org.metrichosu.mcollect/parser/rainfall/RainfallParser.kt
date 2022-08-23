@@ -18,7 +18,7 @@ class RainfallParser : ExternalSourceParser {
     private val rainfallUrl =
         "http://apis.data.go.kr/6260000/BusanRainfalldepthInfoService/getRainfallInfo?serviceKey=8KyZomTTp%2BQRbESv%2BQXJQusqYBCrloGOPD%2FW%2BIK%2BdcrecxGF9HsdqSDnUhj2rEkSNHvNgKWO8V%2BdfKP4OM8gxg%3D%3D&pageNo=1&numOfRows=1000&resultType=json"
 
-    override fun parseDataFromSource(metric: Metric): MetricValue {
+    override fun parseDataFromSource(mid: String): MetricValue {
         val getRequest = HttpRequest.newBuilder()
             .uri(URI.create(rainfallUrl))
             .build()
@@ -27,6 +27,6 @@ class RainfallParser : ExternalSourceParser {
             .let { ObjectMapper().readValue(it, RainfallDto::class.java) }
 
         return requestResult.rainfallInfo.body.items.item.last()
-            .let { MetricValue(metric.mid, Util.getTodayDateTime(), it.value) }
+            .let { MetricValue(mid, Util.getTodayDateTime(), it.value) }
     }
 }

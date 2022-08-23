@@ -17,7 +17,7 @@ class AppleParser : S3SourceParser {
                 val (rowProductName, rowPrice) = row
                 if (rowProductName == productName) {
                     // mid 어떻게 넣을 것인지
-                    metricValue = MetricValue(1, Util.getTodayDateTime(), rowPrice.toDouble())
+                    metricValue = MetricValue("apple-price", Util.getTodayDateTime(), rowPrice.toDouble())
                     return@open
                 }
             }

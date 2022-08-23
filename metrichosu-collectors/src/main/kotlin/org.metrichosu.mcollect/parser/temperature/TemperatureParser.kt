@@ -18,7 +18,7 @@ class TemperatureParser: ExternalSourceParser {
     private val rainfallUrl =
         "http://api.openweathermap.org/data/2.5/weather?lat=37.410090&lon=126.972738&appid=12d9fdd365edb81aa3cb04ed20bf4453&units=metric"
 
-    override fun parseDataFromSource(metric: Metric): MetricValue {
+    override fun parseDataFromSource(mid: String): MetricValue {
         val getRequest = HttpRequest.newBuilder()
             .uri(URI.create(rainfallUrl))
             .build()
@@ -27,7 +27,7 @@ class TemperatureParser: ExternalSourceParser {
             .let { ObjectMapper().readValue(it, TemperatureDto::class.java) }
 
         return requestResult.main.temp.let{ temperature ->
-            MetricValue(metric.mid, Util.getTodayDateTime(), temperature)
+            MetricValue(mid, Util.getTodayDateTime(), temperature)
         }
     }
 }

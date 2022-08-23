@@ -19,7 +19,7 @@ class SeoulHumidity : ExternalSourceParser {
         .build()
     private val url = "https://api.openweathermap.org/data/3.0/onecall?lat=37.564&lon=127&units=metric&exclude=minutely,hourly,daily&appid=521912d5d02f3ba9098e56bc5952c7e7"
 
-    override fun parseDataFromSource(metric: Metric): MetricValue {
+    override fun parseDataFromSource(mid: String): MetricValue {
         val getRequest = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .build()
@@ -29,7 +29,7 @@ class SeoulHumidity : ExternalSourceParser {
             }
 
         return MetricValue(
-            metric.mid,
+            mid,
             Date.from(LocalDateTime.now().toInstant(ZoneOffset.ofHours(9))),
             requestResult.currentWeatherInfo.humidity
         )

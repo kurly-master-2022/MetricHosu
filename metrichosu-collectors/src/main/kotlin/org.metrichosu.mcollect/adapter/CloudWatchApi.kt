@@ -10,7 +10,7 @@ import org.metrichosu.mcollect.dto.MetricValue
 
 class CloudWatchApi {
     private val cloudWatch: AmazonCloudWatch = AmazonCloudWatchClientBuilder.defaultClient()
-    private val namespace = "Custom Metric Demo"
+    private val namespace = "metrichosu"
 
     fun postToCloudWatch(
             metricValue: MetricValue

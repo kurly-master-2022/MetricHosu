@@ -13,11 +13,11 @@ import org.metrichosu.mcollect.parser.seoulWindSpeed.SeoulWindSpeed
 import org.metrichosu.mcollect.parser.temperature.TemperatureParser
 
 interface ExternalSourceParser {
-    fun parseDataFromSource(metric: Metric): MetricValue
+    fun parseDataFromSource(mid: String): MetricValue
 }
 
-fun getParser(metric: Metric): ExternalSourceParser {
-    return when(metric.name){
+fun getParser(mid: String): ExternalSourceParser {
+    return when(mid){
         "apple-sales-amount" -> AppleSaleAmount()
         "daily-kurly-warehouse-fee" -> DailyKurlyWarehouseFee()
         "rainfall" -> RainfallParser()
