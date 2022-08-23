@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class TriggerClient {
 
-    @Autowired
-    @Qualifier("metric-collector-arn")
-    private String metricCollectorArn;
-
     private final AmazonCloudWatchEvents events;
+
+    @Autowired
+    @Qualifier("extern-metric-collector-arn")
+    private String metricCollectorArn;
 
     public TriggerClient(AmazonCloudWatchEvents events) {
         this.events = events;

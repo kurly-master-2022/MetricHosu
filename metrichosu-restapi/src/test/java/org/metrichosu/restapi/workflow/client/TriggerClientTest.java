@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.metrichosu.restapi.testconfig.AWSClientsConfig;
-import org.metrichosu.restapi.config.MetricCollectorArnResolver;
+import org.metrichosu.restapi.config.StackOutputsResolver;
 import org.metrichosu.restapi.workflow.entity.trigger.CollectorTrigger;
 import org.metrichosu.restapi.workflow.entity.metric.Metric;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,8 @@ class TriggerClientTest {
 
     @BeforeEach
     void init() {
-        lambdaArn = new MetricCollectorArnResolver(cloudFormation).resolve();
+        lambdaArn = new StackOutputsResolver(cloudFormation, "metrichosu-collectors")
+                        .resolveOutput("ExternMetricCollectorFunction");
         client = new TriggerClient(events);
         client.setMetricCollectorArn(lambdaArn);
         System.out.println("ARN=" + lambdaArn);

@@ -38,8 +38,12 @@ public class WorkflowService {
      */
     public WorkflowDefinition putWorkflow(WorkflowDefinition definition) throws CloudClientRuntimeError {
         String metricId = definition.getMetric().getId();
-        WorkflowDefinition previousDefinition = this.contains(definition)? this.describeOriginWorkflow(metricId) : null;
-        return this.handlePutWorkflowResult(definition, atomicPutEntity(definition, metricId, previousDefinition));
+
+        WorkflowDefinition previousDefinition =
+                this.contains(definition)? this.describeOriginWorkflow(metricId) : null;
+
+        return this.handlePutWorkflowResult(definition,
+                atomicPutEntity(definition, metricId, previousDefinition));
     }
 
     private String atomicPutEntity(WorkflowDefinition definition, String metricId, WorkflowDefinition previous) {

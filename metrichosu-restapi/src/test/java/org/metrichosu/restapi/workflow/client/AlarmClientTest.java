@@ -1,10 +1,12 @@
 package org.metrichosu.restapi.workflow.client;
 
+import com.amazonaws.services.cloudformation.AmazonCloudFormation;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.metrichosu.restapi.config.StackOutputsResolver;
 import org.metrichosu.restapi.testconfig.AWSClientsConfig;
 import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
 import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;
@@ -24,13 +26,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class AlarmClientTest {
 
     @Autowired
+    AmazonCloudFormation cloudFormation;
+
+    @Autowired
     AmazonCloudWatch cloudWatch;
 
     AlarmClient client;
 
     @BeforeEach
     void init() {
+        String alarmTopicArn = new StackOutputsResolver(cloudFormation, "metrichosu-restapi")
+                .resolveOutput("AlarmTopicArn");
         client = new AlarmClient(cloudWatch);
+        client.setAlarmTopicArn(alarmTopicArn);
     }
 
     @Test
