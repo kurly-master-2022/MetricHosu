@@ -1,7 +1,8 @@
-package org.metrichosu.notification;
+package org.metrichosu.notification.custom;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.metrichosu.notification.dto.input.CloudWatchAlarmMessage;
 
 import java.util.Locale;
 
@@ -17,7 +18,6 @@ public class SimpleAlarmMessage extends CustomCloudWatchAlarmMessage {
 
     /**
      * 커스텀 알람 메시지를 만듭니다.
-     *
      * @param original 원본 알람 메시지; CloudWatch가 SNS에게 발행한 형식.
      */
     public SimpleAlarmMessage(CloudWatchAlarmMessage original) {
@@ -27,7 +27,6 @@ public class SimpleAlarmMessage extends CustomCloudWatchAlarmMessage {
     @Override
     public String getVerbose() {
         sb.setLength(0);
-
         String title = String.format("알람 %s(%s)이 활성됨.\n", getAlarmName(), getAlarmArn());
 
         String transfer = String.format("%s의 %s/%s 메트릭이 %s=> %s로 전환되어 알람이 발생했습니다.%n",

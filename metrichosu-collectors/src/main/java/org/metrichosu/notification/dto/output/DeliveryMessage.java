@@ -1,6 +1,7 @@
-package org.metrichosu.notification;
+package org.metrichosu.notification.dto.output;
 
 import lombok.ToString;
+import org.metrichosu.notification.custom.CustomCloudWatchAlarmMessage;
 
 /**
  * @author jbinchoo

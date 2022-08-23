@@ -1,6 +1,7 @@
-package org.metrichosu.notification;
+package org.metrichosu.notification.custom;
 
 import org.joda.time.DateTime;
+import org.metrichosu.notification.dto.input.CloudWatchAlarmMessage;
 
 /**
  * @author jbinchoo
