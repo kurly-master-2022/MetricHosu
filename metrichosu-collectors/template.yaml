@@ -7,9 +7,18 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 480
+    CodeUri: ../metrichosu-collectors
+    Timeout: 300
+    Runtime: java11
+    MemorySize: 512
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TZ: Asia/Seoul
 
 Resources:
+  # metric collection
   MetricHosuBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -30,12 +39,7 @@ Resources:
   ExternMetricCollector:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../metrichosu-collectors
       Handler: org.metrichosu.mcollect.ExternMetricCollector::handle
-      Runtime: java11
-      Architectures:
-        - x86_64
-      MemorySize: 512
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref MetricHosuTable
@@ -45,12 +49,7 @@ Resources:
   S3MetricCollector:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../metrichosu-collectors
       Handler: org.metrichosu.mcollect.S3MetricCollector::handle
-      Runtime: java11
-      Architectures:
-        - x86_64
-      MemorySize: 512
       Events:
         S3NewMetricDataEvent:
           Type: S3
@@ -70,6 +69,31 @@ Resources:
         - CloudWatchPutMetricPolicy: {}
         - CloudWatchDashboardPolicy: {}
 
+  # metric alarm publishing
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+
+  AlarmMessageTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: MetricHosu Noti
+
+  AlarmMessageConverter:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.metrichosu.notification.AlarmMessageConverter::handle
+      Events:
+        NewCloudWatchAlarm:
+          Type: SNS
+          Properties:
+            Topic: !Ref AlarmTopic
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt AlarmMessageTopic.TopicName
+      Environment:
+        Variables:
+          ALARM_MESSAGE_TOPIC: !Ref AlarmMessageTopic
+
 Outputs:
   ExternMetricCollectorFunction:
     Description: "Extern Metric Collector ARN"
@@ -78,3 +102,7 @@ Outputs:
   S3MetricCollectorFunction:
     Description: "S3 Metric Collector ARN"
     Value: !GetAtt S3MetricCollector.Arn
+
+  AlarmMessageConverter:
+    Description: "Alarm Message Converter ARN"
+    Value: !GetAtt AlarmMessageConverter.Arn

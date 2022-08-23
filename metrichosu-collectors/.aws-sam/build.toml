@@ -8,6 +8,6 @@ architecture = "x86_64"
 handler = "org.metrichosu.mcollect.ExternMetricCollector::handle"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["ExternMetricCollector", "S3MetricCollector"]
+functions = ["ExternMetricCollector", "S3MetricCollector", "AlarmMessageConverter"]
 
 [layer_build_definitions]
