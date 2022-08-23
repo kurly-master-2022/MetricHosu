@@ -69,31 +69,6 @@ Resources:
         - CloudWatchPutMetricPolicy: {}
         - CloudWatchDashboardPolicy: {}
 
-  # metric alarm publishing
-  AlarmTopic:
-    Type: AWS::SNS::Topic
-
-  AlarmMessageTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      DisplayName: MetricHosu Noti
-
-  AlarmMessageConverter:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: org.metrichosu.notification.AlarmMessageConverter::handle
-      Events:
-        NewCloudWatchAlarm:
-          Type: SNS
-          Properties:
-            Topic: !Ref AlarmTopic
-      Policies:
-        - SNSPublishMessagePolicy:
-            TopicName: !GetAtt AlarmMessageTopic.TopicName
-      Environment:
-        Variables:
-          ALARM_MESSAGE_TOPIC: !Ref AlarmMessageTopic
-
 Outputs:
   ExternMetricCollectorFunction:
     Description: "Extern Metric Collector ARN"
@@ -102,11 +77,3 @@ Outputs:
   S3MetricCollectorFunction:
     Description: "S3 Metric Collector ARN"
     Value: !GetAtt S3MetricCollector.Arn
-
-  AlarmTopic:
-    Description: "AlarmTopic ARN"
-    Value: !Ref AlarmTopic
-
-  AlarmMessageConverter:
-    Description: "Alarm Message Converter ARN"
-    Value: !GetAtt AlarmMessageConverter.Arn

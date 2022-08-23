@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  metrichosu
+
+  SAM Template for metrichosu-alarms
+
+Globals:
+  Function:
+    CodeUri: ../metrichosu-alarms
+    Timeout: 300
+    Runtime: java11
+    MemorySize: 512
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TZ: Asia/Seoul
+
+Resources:
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+
+  AlarmMessageTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: MetricHosu Noti
+
+  AlarmMessageConverter:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: org.metrichosu.notification.AlarmMessageConverter::handle
+      Events:
+        NewCloudWatchAlarm:
+          Type: SNS
+          Properties:
+            Topic: !Ref AlarmTopic
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt AlarmMessageTopic.TopicName
+      Environment:
+        Variables:
+          ALARM_MESSAGE_TOPIC: !Ref AlarmMessageTopic
+
+Outputs:
+  AlarmTopic:
+    Description: "AlarmTopic ARN"
+    Value: !Ref AlarmTopic
+
+  AlarmMessageConverter:
+    Description: "Alarm Message Converter ARN"
+    Value: !GetAtt AlarmMessageConverter.Arn

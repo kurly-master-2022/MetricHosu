@@ -1,8 +1,4 @@
 dependencies {
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
-    implementation "com.amazonaws:aws-java-sdk-sns:${awsSdkVersion}"
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.2'
-    implementation 'ch.qos.logback:logback-classic:1.2.11'
 }

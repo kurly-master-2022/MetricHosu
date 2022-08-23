@@ -6,7 +6,7 @@ import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.metrichosu.restapi.config.StackOutputsResolver;
+import org.metrichosu.restapi.config.StackOutputsDiscovery;
 import org.metrichosu.restapi.testconfig.AWSClientsConfig;
 import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
 import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;
@@ -35,7 +35,7 @@ class AlarmClientTest {
 
     @BeforeEach
     void init() {
-        String alarmTopicArn = new StackOutputsResolver(cloudFormation, "metrichosu-collectors")
+        String alarmTopicArn = new StackOutputsDiscovery(cloudFormation, "metrichosu-collectors")
                 .resolveOutput("AlarmTopic");
         client = new AlarmClient(cloudWatch);
         client.setAlarmTopicArn(alarmTopicArn);

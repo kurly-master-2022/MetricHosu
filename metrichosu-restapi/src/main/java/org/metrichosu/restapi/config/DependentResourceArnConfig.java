@@ -14,17 +14,17 @@ import org.springframework.context.annotation.Lazy;
 public class DependentResourceArnConfig {
 
     @Autowired
-    private StackOutputsResolver resolver;
+    private StackOutputsDiscovery resolver;
 
     @Lazy
     @Bean(name = "extern-metric-collector-arn")
-    public String externMetricCollectorArn(@Value("${metrichosu-collectors.extern-metric-collector}") String outputName) {
+    public String externMetricCollectorArn(@Value("${extern-metric-collector}") String outputName) {
         return this.resolver.resolveOutput(outputName);
     }
 
     @Lazy
     @Bean(name = "alarm-topic-arn")
-    public String alarmTopicArn(@Value("${metrichosu-collectors.alarm-topic}") String outputName) {
+    public String alarmTopicArn(@Value("${alarm-topic}") String outputName) {
         return this.resolver.resolveOutput(outputName);
     }
 }

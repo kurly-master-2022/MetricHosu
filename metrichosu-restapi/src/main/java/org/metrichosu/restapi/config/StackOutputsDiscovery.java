@@ -20,13 +20,13 @@ import java.util.Map;
  * @since 2022/08/21
  */
 @Component
-public class StackOutputsResolver {
+public class StackOutputsDiscovery {
 
     private AmazonCloudFormation cloudFormation;
     private Map<String, String> outputs = new HashMap<>();
 
-    public StackOutputsResolver(@Autowired AmazonCloudFormation cloudFormation,
-                                @Value("${dependent-stack-names}") String... stackNames) {
+    public StackOutputsDiscovery(@Autowired AmazonCloudFormation cloudFormation,
+                                 @Value("${dependent-stack-names}") String... stackNames) {
 
         this.cloudFormation = cloudFormation;
         this.loadOutputs(stackNames);

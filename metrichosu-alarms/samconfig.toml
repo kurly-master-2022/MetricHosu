@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "metrichosu-collectors"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1xvux24no0u9c"
+s3_prefix = "metrichosu-collectors"
+region = "ap-northeast-2"
+profile = "kurly"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
