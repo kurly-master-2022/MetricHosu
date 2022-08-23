@@ -14,17 +14,14 @@ import org.springframework.stereotype.Component;
  * @since 2022/08/21
  */
 @Slf4j
-@Component
 public class TriggerClient {
 
     private final AmazonCloudWatchEvents events;
-
-    @Autowired
-    @Qualifier("extern-metric-collector-arn")
     private String metricCollectorArn;
 
-    public TriggerClient(AmazonCloudWatchEvents events) {
+    public TriggerClient(AmazonCloudWatchEvents events, String metricCollectorArn) {
         this.events = events;
+        this.metricCollectorArn = metricCollectorArn;
     }
 
     public void putTrigger(CollectorTrigger trigger) {
@@ -57,10 +54,6 @@ public class TriggerClient {
     public RuleState getRuleState(CollectorTrigger trigger) {
         return RuleState.valueOf(events.describeRule(
                 new DescribeRuleRequest().withName(trigger.getRuleId())).getState());
-    }
-
-    public void setMetricCollectorArn(String metricCollectorArn) {
-        this.metricCollectorArn = metricCollectorArn;
     }
 
     public void delete(CollectorTrigger trigger) {

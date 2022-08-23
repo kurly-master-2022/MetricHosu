@@ -6,7 +6,6 @@ import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.metrichosu.restapi.config.StackOutputsDiscovery;
 import org.metrichosu.restapi.testconfig.AWSClientsConfig;
 import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
 import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;

@@ -13,15 +13,17 @@ import org.springframework.stereotype.Component;
  * @author jbinchoo
  * @since 2022/08/21
  */
-@Component
-@RequiredArgsConstructor
 public class AlarmClient {
 
     private final AmazonCloudWatch cloudWatch;
-
-    @Autowired
-    @Qualifier("alarm-topic-arn")
     private String alarmTopicArn;
+    private String alarmMessageTopicArn;
+
+    public AlarmClient(AmazonCloudWatch cloudWatch, String alarmTopicArn, String alarmMessageTopicArn) {
+        this.cloudWatch = cloudWatch;
+        this.alarmTopicArn = alarmTopicArn;
+        this.alarmMessageTopicArn = alarmMessageTopicArn;
+    }
 
     public void register(Alarm alarm) {
         cloudWatch.putMetricAlarm(
@@ -48,9 +50,5 @@ public class AlarmClient {
                 new DescribeAlarmsRequest().withAlarmNames(alarm.getId()));
         String valueString = result.getMetricAlarms().get(0).getStateValue();
         return AlarmStateValue.valueOf(valueString);
-    }
-
-    public void setAlarmTopicArn(String alarmTopicArn) {
-        this.alarmTopicArn = alarmTopicArn;
     }
 }

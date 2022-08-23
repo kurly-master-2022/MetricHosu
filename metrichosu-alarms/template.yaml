@@ -47,6 +47,10 @@ Outputs:
     Description: "AlarmTopic ARN"
     Value: !Ref AlarmTopic
 
+  AlarmMessageTopic:
+    Description: "AlarmMessageTopic ARN"
+    Value: !Ref AlarmMessageTopic
+
   AlarmMessageConverter:
     Description: "Alarm Message Converter ARN"
     Value: !GetAtt AlarmMessageConverter.Arn
