@@ -6,13 +6,22 @@ java.sourceCompatibility(JavaVersion.VERSION_11)
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.spring.io/snapshot" }
-    maven { url "https://repo.spring.io/milestone" }
 }
 
 dependencies {
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.9.1'
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // CloudWatch
+    implementation 'com.amazonaws:aws-java-sdk-cloudwatch:1.12.283'
+
+    // csv reader
+    implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:1.6.0'
+
 }
 
 compileKotlin {
