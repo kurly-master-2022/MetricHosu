@@ -29,7 +29,7 @@ class SeoulClouds : ExternalSourceParser {
 
 		return MetricValue(
 				mid,
-				Util.getTodayDateTime(), ,
+				Util.getTodayDateTime(),
 				requestResult.currentWeatherInfo.clouds
 		)
 	}
