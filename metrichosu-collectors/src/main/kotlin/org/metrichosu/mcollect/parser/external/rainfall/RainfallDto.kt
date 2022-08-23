@@ -1,18 +1,22 @@
 package org.metrichosu.mcollect.parser.external.rainfall
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class RainfallDto(
     @JsonProperty("getRainfallInfo")
     val rainfallInfo: RainfallInfo
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Items(
         @JsonProperty("item")
         val item: List<Item>
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Item(
         @JsonProperty("accRain")
         val value: Double,
@@ -32,6 +36,7 @@ data class Item(
         val timeDay: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class RainfallInfo(
         @JsonProperty("body")
         val body: Body,
@@ -39,6 +44,7 @@ data class RainfallInfo(
         val header: Header
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Header(
         @JsonProperty("resultCode")
         val resultCode: String,
@@ -46,6 +52,7 @@ data class Header(
         val resultMsg: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Body(
         @JsonProperty("items")
         val items: Items,

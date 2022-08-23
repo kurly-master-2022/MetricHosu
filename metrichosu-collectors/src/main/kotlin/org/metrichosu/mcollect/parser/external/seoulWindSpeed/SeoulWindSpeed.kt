@@ -1,6 +1,7 @@
 package org.metrichosu.mcollect.parser.external.seoulWindSpeed
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.metrichosu.mcollect.Util
 import org.metrichosu.mcollect.dto.MetricValue
 import org.metrichosu.mcollect.parser.external.ExternalSourceParser
 import java.net.URI
@@ -28,7 +29,7 @@ class SeoulWindSpeed: ExternalSourceParser {
 
         return MetricValue(
             mid,
-            Date.from(LocalDateTime.now().toInstant(ZoneOffset.ofHours(9))),
+            Util.getTodayDateTime(),
             requestResult.currentWeatherInfo.windSpeed
         )
     }
