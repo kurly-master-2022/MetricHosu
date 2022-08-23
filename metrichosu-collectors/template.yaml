@@ -103,6 +103,10 @@ Outputs:
     Description: "S3 Metric Collector ARN"
     Value: !GetAtt S3MetricCollector.Arn
 
+  AlarmTopic:
+    Description: "AlarmTopic ARN"
+    Value: !Ref AlarmTopic
+
   AlarmMessageConverter:
     Description: "Alarm Message Converter ARN"
     Value: !GetAtt AlarmMessageConverter.Arn

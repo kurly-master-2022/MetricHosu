@@ -19,12 +19,12 @@ public class DependentResourceArnConfig {
     @Lazy
     @Bean(name = "extern-metric-collector-arn")
     public String externMetricCollectorArn(@Value("${metrichosu-collectors.extern-metric-collector}") String outputName) {
-        return resolver.resolveOutput(outputName);
+        return this.resolver.resolveOutput(outputName);
     }
 
     @Lazy
     @Bean(name = "alarm-topic-arn")
-    public String alarmTopicArn(@Value("${metrichosu-restapi.alarm-topic}") String outputName) {
-        return resolver.resolveOutput(outputName);
+    public String alarmTopicArn(@Value("${metrichosu-collectors.alarm-topic}") String outputName) {
+        return this.resolver.resolveOutput(outputName);
     }
 }

@@ -35,8 +35,8 @@ class AlarmClientTest {
 
     @BeforeEach
     void init() {
-        String alarmTopicArn = new StackOutputsResolver(cloudFormation, "metrichosu-restapi")
-                .resolveOutput("AlarmTopicArn");
+        String alarmTopicArn = new StackOutputsResolver(cloudFormation, "metrichosu-collectors")
+                .resolveOutput("AlarmTopic");
         client = new AlarmClient(cloudWatch);
         client.setAlarmTopicArn(alarmTopicArn);
     }
