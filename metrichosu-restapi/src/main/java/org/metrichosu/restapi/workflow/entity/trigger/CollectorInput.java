@@ -11,7 +11,7 @@ import org.metrichosu.restapi.workflow.entity.metric.Metric;
  */
 @Data
 public class CollectorInput {
-
+    private static final ObjectMapper mapper = new ObjectMapper();
     private String mid;
 
     public CollectorInput(Metric metric) {
@@ -20,9 +20,9 @@ public class CollectorInput {
 
     public String asJson() {
         try {
-            return new ObjectMapper().writeValueAsString(this);
+            return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize a MetricInput", e);
+            throw new RuntimeException("메트릭 수집기용 입력을 생성하는 데 실패했습니다.", e);
         }
     }
 }
