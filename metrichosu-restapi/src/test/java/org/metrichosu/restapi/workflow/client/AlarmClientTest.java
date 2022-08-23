@@ -6,14 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.metrichosu.restapi.testconfig.AWSClientsConfig;
-import org.metrichosu.restapi.workflow.entity.Alarm;
-import org.metrichosu.restapi.workflow.entity.AlarmComparator;
-import org.metrichosu.restapi.workflow.entity.Metric;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author jbinchoo

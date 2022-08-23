@@ -3,13 +3,17 @@ package org.metrichosu.restapi.workflow.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.metrichosu.restapi.workflow.dto.input.MetricForm;
+import org.metrichosu.restapi.workflow.dto.output.AlarmStatusDto;
 import org.metrichosu.restapi.workflow.dto.output.WorkflowDefinitionDto;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmStatus;
 import org.metrichosu.restapi.workflow.entity.WorkflowDefinition;
 import org.metrichosu.restapi.workflow.service.WorkflowService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author jbinchoo
@@ -22,6 +26,13 @@ import javax.validation.Valid;
 public class WorkflowController {
 
     private final WorkflowService workflowService;
+
+    @GetMapping
+    public List<WorkflowDefinitionDto> listWorkflows() {
+        List<WorkflowDefinition> definitions = this.workflowService.describeAllOriginWorkflows();
+        return definitions.stream().map(WorkflowDefinitionDto::new)
+                .collect(Collectors.toList());
+    }
 
     @PutMapping
     public WorkflowDefinitionDto putWorkflow(@Valid @RequestBody MetricForm metadata) {
@@ -52,5 +63,11 @@ public class WorkflowController {
     public ResponseEntity<?> deleteWorkflow(@PathVariable("mid") String metricId) {
         workflowService.deleteOriginWorkflow(metricId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{mid}/alarm-status")
+    public AlarmStatusDto getAlarmStatus(@PathVariable("mid") String metricId) {
+        AlarmStatus alarmStatus = workflowService.getOriginAlarmStatus(metricId);
+        return new AlarmStatusDto(alarmStatus);
     }
 }

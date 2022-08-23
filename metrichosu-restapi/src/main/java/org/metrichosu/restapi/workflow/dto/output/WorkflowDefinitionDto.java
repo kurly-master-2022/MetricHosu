@@ -2,6 +2,11 @@ package org.metrichosu.restapi.workflow.dto.output;
 
 import lombok.Data;
 import org.metrichosu.restapi.workflow.entity.*;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
+import org.metrichosu.restapi.workflow.entity.metric.MetricType;
+import org.metrichosu.restapi.workflow.entity.trigger.CollectorTrigger;
 
 /**
  * {@code 워크플로 정의} 엔터티의 출력용 형식 데이터입니다.

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.metrichosu.restapi.workflow.client.TriggerClient;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
+import org.metrichosu.restapi.workflow.entity.trigger.CollectorTrigger;
 
 /**
  * @author jbinchoo

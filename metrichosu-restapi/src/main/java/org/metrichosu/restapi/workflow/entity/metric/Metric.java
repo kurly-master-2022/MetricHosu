@@ -1,4 +1,4 @@
-package org.metrichosu.restapi.workflow.entity;
+package org.metrichosu.restapi.workflow.entity.metric;
 
 import lombok.*;
 

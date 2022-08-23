@@ -1,12 +1,10 @@
 package org.metrichosu.restapi.workflow.client;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
-import com.amazonaws.services.cloudwatch.model.ComparisonOperator;
-import com.amazonaws.services.cloudwatch.model.DeleteAlarmsRequest;
-import com.amazonaws.services.cloudwatch.model.PutMetricAlarmRequest;
-import com.amazonaws.services.cloudwatch.model.Statistic;
+import com.amazonaws.services.cloudwatch.model.*;
 import lombok.RequiredArgsConstructor;
-import org.metrichosu.restapi.workflow.entity.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmStateValue;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,10 +15,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AlarmClient {
 
-    private final AmazonCloudWatch cloudwath;
+    private final AmazonCloudWatch cloudWatch;
 
     public void register(Alarm alarm) {
-        cloudwath.putMetricAlarm(
+        cloudWatch.putMetricAlarm(
                 new PutMetricAlarmRequest()
                         .withNamespace("metrichosu")
                         .withMetricName(alarm.getMetricId())
@@ -34,7 +32,14 @@ public class AlarmClient {
     }
 
     public void delete(Alarm alarm) {
-        cloudwath.deleteAlarms(
+        cloudWatch.deleteAlarms(
                 new DeleteAlarmsRequest().withAlarmNames(alarm.getId()));
+    }
+
+    public AlarmStateValue getAlarmStateValue(Alarm alarm) {
+        var result = cloudWatch.describeAlarms(
+                new DescribeAlarmsRequest().withAlarmNames(alarm.getId()));
+        String valueString = result.getMetricAlarms().get(0).getStateValue();
+        return AlarmStateValue.valueOf(valueString);
     }
 }

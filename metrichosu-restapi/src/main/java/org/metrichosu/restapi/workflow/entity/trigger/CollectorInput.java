@@ -1,8 +1,9 @@
-package org.metrichosu.restapi.workflow.entity;
+package org.metrichosu.restapi.workflow.entity.trigger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
 
 /**
  * @author jbinchoo

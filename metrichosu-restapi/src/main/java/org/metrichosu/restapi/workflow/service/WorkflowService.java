@@ -9,10 +9,14 @@ import org.metrichosu.restapi.exception.WorkflowTypeMismatched;
 import org.metrichosu.restapi.workflow.client.AlarmClient;
 import org.metrichosu.restapi.workflow.client.TriggerClient;
 import org.metrichosu.restapi.workflow.dynamo.MetricWorkflowDynamoAdapter;
-import org.metrichosu.restapi.workflow.entity.Alarm;
-import org.metrichosu.restapi.workflow.entity.Metric;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmStatus;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
 import org.metrichosu.restapi.workflow.entity.WorkflowDefinition;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author jbinchoo
@@ -114,6 +118,15 @@ public class WorkflowService {
         }
         return definition;
     }
+    /**
+     * 모든 영속된 {@code 워크플로} 엔터티를 반환하되
+     * 실제 AWS 상의 워크플로 자원들의 상태를 조회하고, 그들 기준으로 싱크한 뒤 반환합니다.
+     * @return 워크플로 엔터티 리스트
+     */
+    public List<WorkflowDefinition> describeAllOriginWorkflows() {
+        return dynamoAdapter.findAll().stream().map(definition -> definition.sync(this.triggerClient))
+                .collect(Collectors.toList());
+    }
 
     /**
      * 영속된 {@code 워크플로} 엔터티를 반환하되
@@ -182,5 +195,15 @@ public class WorkflowService {
 
     public boolean contains(String metricId) {
         return this.dynamoAdapter.existsByMetricId(metricId);
+    }
+
+    public AlarmStatus getOriginAlarmStatus(String metricId) throws CloudClientRuntimeError {
+        WorkflowDefinition definition = this.describeOriginWorkflow(metricId);
+        Alarm alarm = definition.getAlarm();
+        try {
+            return alarm.getAlarmStatus(alarmClient);
+        } catch (Exception ex) {
+            throw new CloudClientRuntimeError(String.format("알람 %s 상태를 얻는 데 실패했습니다.", alarm.getId()));
+        }
     }
 }

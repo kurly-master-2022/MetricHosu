@@ -1,4 +1,4 @@
-package org.metrichosu.restapi.workflow.entity;
+package org.metrichosu.restapi.workflow.entity.trigger;
 
 import com.amazonaws.services.cloudwatchevents.model.RuleState;
 import lombok.Builder;
@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.metrichosu.restapi.workflow.client.TriggerClient;
 import org.metrichosu.restapi.exception.CloudClientRuntimeError;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
 
 import java.util.Objects;
 

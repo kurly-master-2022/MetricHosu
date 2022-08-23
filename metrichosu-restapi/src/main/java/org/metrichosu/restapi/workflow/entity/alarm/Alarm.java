@@ -1,6 +1,8 @@
-package org.metrichosu.restapi.workflow.entity;
+package org.metrichosu.restapi.workflow.entity.alarm;
 
 import lombok.*;
+import org.metrichosu.restapi.workflow.client.AlarmClient;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
 
 /**
  * @author jbinchoo
@@ -30,5 +32,13 @@ public class Alarm {
 
     public String getMetricId() {
         return metric.getId();
+    }
+
+    public AlarmStatus getAlarmStatus(AlarmClient alarmClient) {
+        return AlarmStatus.builder()
+                .id(getId())
+                .state(alarmClient.getAlarmStateValue(this))
+                .metricId(getMetricId())
+                .build();
     }
 }

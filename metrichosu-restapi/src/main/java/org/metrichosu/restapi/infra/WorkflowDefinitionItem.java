@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.metrichosu.restapi.workflow.entity.*;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
+import org.metrichosu.restapi.workflow.entity.metric.MetricType;
+import org.metrichosu.restapi.workflow.entity.trigger.CollectorTrigger;
 
 /**
  * @author jbinchoo

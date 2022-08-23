@@ -3,10 +3,14 @@ package org.metrichosu.restapi.workflow.dto.input;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.metrichosu.restapi.workflow.entity.*;
+import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
+import org.metrichosu.restapi.workflow.entity.alarm.AlarmComparator;
+import org.metrichosu.restapi.workflow.entity.metric.Metric;
+import org.metrichosu.restapi.workflow.entity.metric.MetricType;
+import org.metrichosu.restapi.workflow.entity.trigger.CollectorTrigger;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 /**
  * 메트릭 수집 워크플로를 정의할 수 있는 입력 폼을 표상합니다.
