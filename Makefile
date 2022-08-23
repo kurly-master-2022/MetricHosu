@@ -5,7 +5,7 @@ collectors: collectors-build
 collectors-build:
 	cd metrichosu-collectors; ./gradlew clean -x test build; sam build --profile kurly
 
-alarms: collectors-build
+alarms: alarms-build
 	cd metrichosu-alarms; sam deploy --profile kurly --stack-name metrichosu-alarms
 alarms-build:
 	cd metrichosu-alarms; ./gradlew clean -x test build; sam build --profile kurly
