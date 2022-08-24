@@ -3,6 +3,8 @@ package org.metrichosu.notification;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.MessageAttributeValue;
+import com.amazonaws.services.sns.model.PublishRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
@@ -12,6 +14,7 @@ import org.metrichosu.notification.dto.input.CloudWatchAlarmMessage;
 import org.metrichosu.notification.dto.output.DeliveryMessage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -58,8 +61,13 @@ public class AlarmMessageConverter {
             log.info(m.toString());
             try {
                 snsClient.publish(ALARM_MESSAGE_TOPIC, mapper.writeValueAsString(m));
-            } catch (JsonProcessingException e) {
-                log.error("전달 메시지 발행 중 오류 발생: {}", m);
+                snsClient.publish(new PublishRequest()
+                        .withTopicArn(ALARM_MESSAGE_TOPIC)
+                        .withMessage(m.getMessage())
+                        .withMessageAttributes(Map.of("mid", new MessageAttributeValue()
+                                .withDataType("String").withStringValue(m.getMid()))));
+            } catch (Exception e) {
+                log.error("전달 메시지 발행 중 오류 발생: {}", m, e);
             }
         }
     }
