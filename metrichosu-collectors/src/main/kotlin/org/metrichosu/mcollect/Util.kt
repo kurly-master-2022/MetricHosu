@@ -5,8 +5,5 @@ import java.time.ZoneOffset
 import java.util.*
 
 object Util {
-    fun getTodayDateTime(): Date {
-        return Date.from(LocalDateTime.now().toInstant(ZoneOffset.ofHours(-9)))
-
-    }
+	fun getTodayDateTime() = Date.from(LocalDateTime.now().toInstant(ZoneOffset.ofHours(-9)))
 }

@@ -12,20 +12,18 @@ import org.metrichosu.mcollect.parser.external.seoulWindSpeed.SeoulWindSpeed
 import org.metrichosu.mcollect.parser.external.temperature.TemperatureParser
 
 interface ExternalSourceParser {
-    fun parseDataFromSource(mid: String): MetricValue
+	fun parseDataFromSource(mid: String): MetricValue
 }
 
-fun getParser(mid: String): ExternalSourceParser {
-    return when(mid){
-        "apple-sales-amount" -> AppleSaleAmount()
-        "daily-kurly-warehouse-fee" -> DailyKurlyWarehouseFee()
-        "rainfall" -> RainfallParser()
-        "seoul-clouds" -> SeoulClouds()
-        "seoul-human-temperature" -> SeoulHumanTemperature()
-        "seoul-humidity" -> SeoulHumidity()
-        "seoul-temperature" -> SeoulTemperature()
-        "seoul-wind-speed" -> SeoulWindSpeed()
-        "temperature" -> TemperatureParser()
-        else -> throw IllegalArgumentException("잘못된 metric name 이 주어졌습니다.")
-    }
+fun getExternalParser(mid: String) = when (mid) {
+	"apple-sales-amount" -> AppleSaleAmount()
+	"daily-kurly-warehouse-fee" -> DailyKurlyWarehouseFee()
+	"rainfall" -> RainfallParser()
+	"seoul-clouds" -> SeoulClouds()
+	"seoul-human-temperature" -> SeoulHumanTemperature()
+	"seoul-humidity" -> SeoulHumidity()
+	"seoul-temperature" -> SeoulTemperature()
+	"seoul-wind-speed" -> SeoulWindSpeed()
+	"temperature" -> TemperatureParser()
+	else -> throw IllegalArgumentException("잘못된 metric name 이 주어졌습니다.")
 }
