@@ -46,6 +46,15 @@ Resources:
         - CloudWatchPutMetricPolicy: {}
         - CloudWatchDashboardPolicy: {}
 
+  EventsRulePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ExternMetricCollector.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Sub "arn:aws:events:${AWS::Region}:${AWS::AccountId}:*"
+
   S3MetricCollector:
     Type: AWS::Serverless::Function
     Properties:
