@@ -61,7 +61,7 @@ Resources:
               S3Key:
                 Rules:
                   - Name: suffix
-                    Value: json
+                    Value: csv
       Policies:
         - S3ReadPolicy:
             BucketName: !Sub metrichosu-${AWS::Region}
