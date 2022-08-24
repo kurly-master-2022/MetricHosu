@@ -19,14 +19,14 @@ class S3MetricCollector {
 			val key = it.s3.`object`.key
 			val bucketName = it.s3.bucket.name
 
-			val (condition, _) = key.split(".")
+			val (dateString, condition, _) = key.split("-", ".")
 
 			val inputStream = s3Client.getObject(bucketName, key).objectContent
 			val rowList = String(inputStream.readAllBytes()).split("\n")
 			val parser = getS3Parser(condition)
 
 			rowList.forEach { row ->
-				parser.parseDataFromRow(condition, row)
+				parser.parseDataFromRow(condition, row, dateString)
 						.let { metricValue ->
 							cloudWatchApi.postToCloudWatch(metricValue)
 							println("$metricValue 등록 완료")
