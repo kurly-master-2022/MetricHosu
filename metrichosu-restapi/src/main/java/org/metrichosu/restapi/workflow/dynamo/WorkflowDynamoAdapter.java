@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor
-public class MetricWorkflowDynamoAdapter {
+public class WorkflowDynamoAdapter {
 
     private final WorkflowDynamoRepository repository;
 

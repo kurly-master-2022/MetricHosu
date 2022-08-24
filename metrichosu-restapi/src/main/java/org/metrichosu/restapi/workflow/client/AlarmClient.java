@@ -5,25 +5,16 @@ import com.amazonaws.services.cloudwatch.model.*;
 import lombok.RequiredArgsConstructor;
 import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
 import org.metrichosu.restapi.workflow.entity.alarm.AlarmStateValue;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 /**
  * @author jbinchoo
  * @since 2022/08/21
  */
+@RequiredArgsConstructor
 public class AlarmClient {
 
     private final AmazonCloudWatch cloudWatch;
-    private String alarmTopicArn;
-    private String alarmMessageTopicArn;
-
-    public AlarmClient(AmazonCloudWatch cloudWatch, String alarmTopicArn, String alarmMessageTopicArn) {
-        this.cloudWatch = cloudWatch;
-        this.alarmTopicArn = alarmTopicArn;
-        this.alarmMessageTopicArn = alarmMessageTopicArn;
-    }
+    private final String alarmTopicArn;
 
     public void register(Alarm alarm) {
         cloudWatch.putMetricAlarm(

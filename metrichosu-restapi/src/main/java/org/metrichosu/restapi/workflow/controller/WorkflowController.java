@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequestMapping("/workflow")
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 public class WorkflowController {
 
     private final WorkflowService workflowService;

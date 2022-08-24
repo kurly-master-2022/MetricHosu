@@ -9,9 +9,12 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEvents;
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEventsClientBuilder;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.metrichosu.restapi.workflow.client.AlarmClient;
+import org.metrichosu.restapi.workflow.client.SnsClient;
 import org.metrichosu.restapi.workflow.client.TriggerClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -81,7 +84,7 @@ public class CloudClientConfig {
     @Bean
     public AlarmClient alarmClient(@Autowired AmazonCloudWatch cloudWatch) {
         this.initialize();
-        return new AlarmClient(cloudWatch, this.arns.get("AlarmTopic"), this.arns.get("AlarmMessageTopic"));
+        return new AlarmClient(cloudWatch, this.arns.get("AlarmTopic"));
     }
 
     @Lazy
@@ -89,5 +92,12 @@ public class CloudClientConfig {
     public TriggerClient triggerClient(@Autowired AmazonCloudWatchEvents events) {
         this.initialize();
         return new TriggerClient(events, this.arns.get("ExternMetricCollectorFunction"));
+    }
+
+    @Lazy
+    @Bean
+    public SnsClient snsClient(@Autowired AmazonSNS amazonSNS) {
+        this.initialize();
+        return new SnsClient(amazonSNS, this.arns.get("AlarmMessageTopic"));
     }
 }

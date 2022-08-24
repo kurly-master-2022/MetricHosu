@@ -2,27 +2,19 @@ package org.metrichosu.restapi.workflow.client;
 
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEvents;
 import com.amazonaws.services.cloudwatchevents.model.*;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.metrichosu.restapi.workflow.entity.trigger.CollectorInput;
 import org.metrichosu.restapi.workflow.entity.trigger.CollectorTrigger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 /**
  * @author jbinchoo
  * @since 2022/08/21
  */
-@Slf4j
+@RequiredArgsConstructor
 public class TriggerClient {
 
     private final AmazonCloudWatchEvents events;
-    private String metricCollectorArn;
-
-    public TriggerClient(AmazonCloudWatchEvents events, String metricCollectorArn) {
-        this.events = events;
-        this.metricCollectorArn = metricCollectorArn;
-    }
+    private final String metricCollectorArn;
 
     public void putTrigger(CollectorTrigger trigger) {
         if (trigger != null) {

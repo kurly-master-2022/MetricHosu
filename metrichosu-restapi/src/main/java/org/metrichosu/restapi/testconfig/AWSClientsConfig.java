@@ -9,6 +9,8 @@ import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEvents;
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEventsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 
@@ -51,6 +53,15 @@ public class AWSClientsConfig {
     @Bean
     public AmazonDynamoDB dynamoDBTest() {
         var builder = AmazonDynamoDBClientBuilder.standard();
+        builder.setRegion("ap-northeast-2");
+        builder.setCredentials(credentialsProvider);
+        return builder.build();
+    }
+
+    @Primary
+    @Bean
+    public AmazonSNS amazonSNSTest() {
+        var builder = AmazonSNSClientBuilder.standard();
         builder.setRegion("ap-northeast-2");
         builder.setCredentials(credentialsProvider);
         return builder.build();

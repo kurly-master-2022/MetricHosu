@@ -7,8 +7,9 @@ import org.metrichosu.restapi.exception.CloudClientRuntimeError;
 import org.metrichosu.restapi.exception.MetricNotFoundException;
 import org.metrichosu.restapi.exception.WorkflowTypeMismatched;
 import org.metrichosu.restapi.workflow.client.AlarmClient;
+import org.metrichosu.restapi.workflow.client.SnsClient;
 import org.metrichosu.restapi.workflow.client.TriggerClient;
-import org.metrichosu.restapi.workflow.dynamo.MetricWorkflowDynamoAdapter;
+import org.metrichosu.restapi.workflow.dynamo.WorkflowDynamoAdapter;
 import org.metrichosu.restapi.workflow.entity.alarm.Alarm;
 import org.metrichosu.restapi.workflow.entity.alarm.AlarmStatus;
 import org.metrichosu.restapi.workflow.entity.metric.Metric;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class WorkflowService {
 
-    private final MetricWorkflowDynamoAdapter dynamoAdapter;
+    private final WorkflowDynamoAdapter dynamoAdapter;
     private final AlarmClient alarmClient;
     private final TriggerClient triggerClient;
 
