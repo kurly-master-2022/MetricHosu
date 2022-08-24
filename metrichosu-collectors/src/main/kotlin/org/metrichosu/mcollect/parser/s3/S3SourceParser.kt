@@ -4,8 +4,7 @@ import org.metrichosu.mcollect.dto.MetricValue
 import org.metrichosu.mcollect.parser.s3.price.PriceParser
 
 interface S3SourceParser {
-	// S3 arn혹은 다른걸로 수정
-	fun parseDataFromSource(mid: String, price: Double): MetricValue
+	fun parseDataFromRow(condition: String, row: String): MetricValue
 }
 
 fun getS3Parser(condition: String) = when (condition) {

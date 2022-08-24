@@ -25,5 +25,5 @@ fun getExternalParser(mid: String) = when (mid) {
 	"seoul-temperature" -> SeoulTemperature()
 	"seoul-wind-speed" -> SeoulWindSpeed()
 	"temperature" -> TemperatureParser()
-	else -> throw IllegalArgumentException("잘못된 metric name 이 주어졌습니다.")
+	else -> throw IllegalArgumentException("잘못된 metric name(${mid}) 이 주어졌습니다.")
 }

@@ -13,7 +13,7 @@ class ExternMetricCollector {
         getExternalParser(mid).parseDataFromSource(mid)
                 .let { metricValue ->
                     cloudWatchApi.postToCloudWatch(metricValue)
-                    println("$metricValue(Metric Value 등록 완료)")
+                    println("$metricValue 등록 완료")
                 }
     }
 }
