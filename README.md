@@ -84,14 +84,36 @@ S3MetricCollector가 메트릭을 읽어들이는 원본 버킷입니다.
 1. 루트 프로젝트 폴더에서 `make collectors` 명령어
 2. 2가 안될 경우 1회에 한해 `metrichosu-collectors` 폴더> `sam build & sam deploy --guided` 진행
 
-## metrichosu-restapi 스택 배포
-1. 루트 프로젝트> `build.gradle`> `version` 설정 (또는, gradle 태스크에 `-Pversion`을 주입하기)
-2. 루트 프로젝트 폴더에서 `make restapi` 명령어
-3. 2가 안될 경우 1회에 한해 `metrichosu-restapi` 폴더> `sam build & sam deploy --guided` 진행
-
 ## metrichosu-alarms 스택 배포
 1. 루트 프로젝트 폴더에서 `make alamrs` 명령어
 2. 2가 안될 경우 1회에 한해 `metrichosu-alarms` 폴더> `sam build & sam deploy --guided` 진행
 
+## metrichosu-restapi 스택 배포
 
-(끝)
+`metrichosu-restapi`는 앞서 **두 스택을 먼저 배포하고 진행**해야 합니다.
+
+---
+### 프로퍼티 설정
+`src> main> resources> credentials.properties`
+```properties
+AWS.accessKey=<로컬 테스트용 액세스 키>
+AWS.secretKey=<로컬 테스트용 시크릿 키>
+```
+AWS 클라우드 상에서는 EC2의 IAM Role이 해당 크레덴셜 주입을 대체해야 합니다.
+
+`src> main> resources> application.properties`
+```properties
+autodi.stackOutputs.metrichosu-collectors=ExternMetricCollectorFunction
+autodi.stackOutputs.metrichosu-alarms=AlarmTopic,AlarmMessageTopic
+```
+
+`metrichosu-restapi`가 의존하는 다른 두 스택의 의존성을 선언하는 부분입니다.
+이 프로퍼티는 `org.metrichosu.restapi.config.CloudClientConfig.java`가 클라이언트 빈들에게 의존 자원을 주입 해주려고 참조합니다.
+
+---
+1. 루트 프로젝트> `build.gradle`> `version` 설정 (또는, gradle 태스크에 `-Pversion`을 주입하기)
+2. 루트 프로젝트 폴더에서 `make restapi` 명령어
+3. 2가 안될 경우 1회에 한해 `metrichosu-restapi` 폴더> `sam build & sam deploy --guided` 진행
+
+
+**(끝)**
