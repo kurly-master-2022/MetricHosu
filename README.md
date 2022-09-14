@@ -1,7 +1,17 @@
 # MetricHosu
 
+## Engineering Wiki
+[Kurly Master 엔지니어링 위키](https://charming-oviraptor-5fa.notion.site/Kurly-Hack-Festa-2022-6e57706ea9a34c0a9eacdfce41fd8621)
+
 ## Simple Introduction
-MetricHosu는 AWS 서비스로 메트릭 수치의 주기적/비동기적 수집 워크플로를 구성하는 인프라 구성입니다.
+MetricHosu는 Amazon CloudWatch 서비스의 API를 래핑해 
+
+메트릭 수치의 주기적/비동기적 수집 워크플로를 관리하는 인프라 구성입니다.
+
+### 개발 목표
+- Lambda를 통하여 다양한 소스에서 메트릭 수치를 수집한다. (PutMetric API 사용)
+- 전달된 메트릭에 대하여 알람 구독을 할 수 있도록, CloudWatch Alarms, SNS 등 지원자원 생성한다.
+- 이러한 워크플로 CRUD 과정을 숨기고, 대신 API 인터페이스로 공개한다.
 
 ## Usage
 ![image](https://user-images.githubusercontent.com/15683098/186367466-f945c9a2-466d-4e32-b1f7-76076e003756.png)
